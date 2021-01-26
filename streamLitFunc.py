@@ -1,29 +1,26 @@
 import pandas as pd
 import numpy as np
 
-import matplotlib.pyplot as plt
-
 class streamLitFunc:
-
-    def plot_case_country(self, countries, df):
-
-        if type(countries) != str:
-            country = str(countries)
-        
-        df['cases'][country].plot()
     
     def plot_case_by_country_and_date(self, countries, df, log = False, date = '20200101', date_end = 0):
 
         if log == False:
             if date_end == 0:
-                df['cases'][[countries]].rolling(14, win_type='triang').mean().loc[date:].plot() 
+                data = df['cases'][countries].rolling(14, win_type='triang').mean().loc[date:]
             else :
-                df['cases'][[countries]].rolling(14, win_type='triang').mean().loc[date:date_end].plot()
+                data = df['cases'][countries].rolling(14, win_type='triang').mean().loc[date:date_end]
         else :
             if date_end  == 0:
-                df['cases'][[countries]].rolling(14, win_type='triang').mean().loc[date:].plot(logy=True)
+                data = df['cases'][countries].rolling(14, win_type='triang').mean().loc[date:]
             else:
-                df['cases'][[countries]].rolling(14, win_type='triang').mean().loc[date: date_end].plot(logy=True)
+                data = df['cases'][countries].rolling(14, win_type='triang').mean().loc[date: date_end]
+        
+        fig = self.graph_plot(data.index, data, "Number of cases by date, smoothed.")
+
+        return fig
+
+
 
     def plot_by_wave(self, df, countries, date_start, date_end, first_wave = True):
 
@@ -51,3 +48,18 @@ class streamLitFunc:
             df[[(measure, countries), (pmeasure, countries)]].cumsum().plot(figsize=(16, 9), grid=True)
         else:
             df[[(measure, countries), (pmeasure, countries)]].loc[date_start:].cumsum().plot(figsize=(16, 9), grid=True)
+
+        def graph_plot(self, x, y, title, countries=countries):
+            fig = plt.figure()
+            ax = fig.add_subplot(1,1,1)
+
+            ax.plot(x, y)
+
+            ax.set_title(title)
+
+            ax.set_xlabel("Date")
+            ax.set_ylabel("Number of cases")
+
+            ax.legend(countries)
+
+            return fig
