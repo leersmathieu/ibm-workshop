@@ -16,6 +16,6 @@ script:
 deploy:
   provider: script
   script:
-    docker push leersma/deep-detect-drawing:latest;
+    docker push leersma/ibm-workshop:latest;
   on:
     branch: main
