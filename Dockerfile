@@ -22,4 +22,4 @@ RUN pip install -r requirements.txt
 
 # Start the app.
 ENTRYPOINT [ "streamlit", "run" ]
-CMD [ "main.py" ]
+CMD [ "App.py" ]

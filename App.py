@@ -1,6 +1,5 @@
 import streamlit as st
 import pandas as pd
-import altair as alt
 
 @st.cache
 def get_data():
@@ -14,15 +13,8 @@ try:
         "Choose countries", list(df.columns)
     )
 
-    if not countries:
-        st.error("Please select at least one country.")
-    """
-    else:
 
-        data =
-        st.write("### Data Visualisation")
 
-        chart = 
-
-        st.altair_chart(chart, use_container_width=True)
-    """
+except:
+    print("An exception occurred")
+    st.markdown("This app don't work")
