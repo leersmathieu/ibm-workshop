@@ -71,31 +71,32 @@ st.write(fig)
 date_end = "20200501"
 
 df['daynum'] = (df.index - df.index.min()).days
+
 measure  = 'cases'
 pmeasure = 'pcases'
 
 if type(date_end)  != str:
     date_end = str(date_end)
 
+for country in countries:
+    df_pred = pd.DataFrame({'x':df['daynum'], 'y':df[measure][country].loc[:"20200501"].rolling(7).mean()})
+    deg = 2
 
-df_pred = pd.DataFrame({'x':df['daynum'], 'y':df[measure][countries].loc[:date_end].rolling(7).mean()})
-deg = 4
+    df_pred = df_pred[df_pred['y'] > 100]
+    fit = np.polyfit(x=df_pred['x'], y=df_pred['y'], deg=deg, full=True)
+    df_pred['p'] = np.polyval(fit[0], df_pred['x'])
+    df[(pmeasure, country)] = 10 ** np.polyval(fit[0], df['daynum'])
 
-df_pred = df_pred[df_pred['y'] > 100]
-fit = np.polyfit(x=df_pred['x'], y=df_pred['y'], deg=deg, full=True)
-df_pred['p'] = np.polyval(fit[0], df_pred['x'])
-df[(pmeasure, countries)] = 10 ** np.polyval(fit[0], df['daynum'])
+    fig = plt.figure()
+    ax = fig.add_subplot(1,1,1)
 
-fig = plt.figure()
-ax = fig.add_subplot(1,1,1)
+    ax.plot(df[[(measure, country), (pmeasure, country)]])
 
-ax.plot(df[[(measure, countries), (pmeasure, countries)]])
+    ax.set_title("Number of cases by date")
 
-ax.set_title("Number of cases by date")
+    ax.set_xlabel("Date")
+    ax.set_ylabel("Number of cases")
 
-ax.set_xlabel("Date")
-ax.set_ylabel("Number of cases")
+    ax.legend(country)
 
-ax.legend(countries)
-
-st.write(fig)
+    st.write(fig)
